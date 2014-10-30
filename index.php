@@ -19,7 +19,14 @@ route_any('^/{save?}$', array('as'=>'home', function () {
     $form = DataForm::create();
     $form->text('title','Title')->rule('required');
     $form->text('subtitle','Subtitle');
-    $form->submit('save');
+    $form->submit('Save');
+
+    $form->saved(function() use ($form)
+    {
+        $form->message("ok record saved");
+        $form->linkRoute("home","Back to the Form");
+    });
+    
     echo blade('dataform.tests.form', compact('form'));
 }));
 

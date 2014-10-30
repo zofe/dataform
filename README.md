@@ -1,8 +1,6 @@
 DataForm
 ============
 
-** IN DEVELOPMENT ** 
-
 
 DataForm is a form builder
 By default it produce Bootstrap 3 compatible output. 
@@ -17,12 +15,30 @@ It can
 
 
 ## usage
+
+IN DEVELOPMENT: 
+ 
+  - there is only "text" field
+  - Model binding is under development
+  
+
+for field "rules" you can reference to laravel validator. 
+
+
 ```php
 
-   $form = DataForm::source(new Article);
-   $form->text('title','Title'); //field name, label
-   $form->textarea('body','Body')->rule('required'); //validation
-   ...
+    $form = DataForm::create();
+    $form->text('title','Title'); //field name, label
+    $form->text('body','Body')->rule('required'); //validation
+    
+    $form->saved(function() use ($form)
+    {
+        //do something with post, then..
+        
+        $form->message("ok record saved");
+        $form->linkRoute("home","Back to the Form");
+    });
+    ...
 
 ```
 

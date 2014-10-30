@@ -75,23 +75,35 @@ class DataForm
             $this->getFieldValues();
             //set field values
 
+
             /*if (isset($this->model)) {
                 return $this->model->save();
             } else {
                 return true;
             }*/
-
+            $this->process_status = "success";
+            
             //callable
-            if ($this->form_callable && $this->process_status == "success") {
+            if ($this->form_callable) {
+                
                 $callable = $this->form_callable;
                 $result = $callable($this);
+                
+                //verificare se nella closure c'è un header location 
+                //o un redirect di laravel
+                if ($result) {
+                    //$this->redirect = $result;
+                    return $result;
+                }
+
+                /*
                 if ($result && is_a($result, 'Illuminate\Http\RedirectResponse')) {
                     $this->redirect = $result;
                 }
                 //reprocess if an error is added in closure
                 if ($this->process_status == 'error') {
                     $this->process();
-                }
+                }*/
             }
 
             //cleanup submits if success
@@ -362,5 +374,94 @@ class DataForm
             }
         }
         return $this->output;
+    }
+
+    /**
+     * build form and check if process status is "success"
+     * execute a callable
+     *
+     * @param callable $callable
+     */
+    public function saved(\Closure $callable)
+    {
+        $this->form_callable = $callable;
+    }
+
+    /**
+     * alias for saved
+     *
+     * @param callable $callable
+     */
+    public function passed(\Closure $callable)
+    {
+        $this->saved($callable);
+    }
+
+    /**
+     * append error (to be used in passed/saved closure)
+     *
+     * @param string $url
+     * @param string $name
+     * @param string $position
+     * @param array  $attributes
+     *
+     * @return $this
+     */
+    public function error($error)
+    {
+        $this->process_status = 'error';
+        $this->message = '';
+        $this->error .= $error;
+
+        return $this;
+    }
+
+    /**
+     * replace form content with a message (error or success)
+     * 
+     * @param $message
+     * @return $this
+     */
+    public function message($message)
+    {
+        $this->message =  $message;
+
+        return $this;
+    }
+
+    /**
+     * @param string $url
+     * @param string $name
+     * @param string $position
+     * @param array  $attributes
+     *
+     * @return $this
+     */
+    public function link($url, $name, $position="BL", $attributes=array())
+    {
+        /*$match_url = trim(parse_url($url, PHP_URL_PATH),'/');
+        if (Request::path()!= $match_url) {
+            $url = Persistence::get($match_url);
+        }*/
+
+        $attributes = array_merge(array("class"=>"btn btn-default"), $attributes);
+        $this->button_container[$position][] =  link_url($url, $name, $attributes);
+        $this->links[] = $url;
+
+        return $this;
+    }
+
+    /**
+     * @param string $route
+     * @param string $name
+     * @param array  $parameters
+     * @param string $position
+     * @param array  $attributes
+     *
+     * @return $this
+     */
+    public function linkRoute($route, $name, $parameters=array(), $position="BL", $attributes=array())
+    {
+        return $this->link(link_route($route, $parameters), $name, $position, $attributes);
     }
 }
