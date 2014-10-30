@@ -19,7 +19,10 @@ It can
 ## usage
 ```php
 
-   //todo
+   $form = DataForm::source(new Article);
+   $form->text('title','Title'); //field name, label
+   $form->textarea('body','Body')->rule('required'); //validation
+   ...
 
 ```
 
