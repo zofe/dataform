@@ -17,7 +17,7 @@ route_any('store', array('as'=>'save', function() {
 route_any('^/{save?}$', array('as'=>'home', function () {
     
     $form = DataForm::create();
-    $form->text('title','Title');
+    $form->text('title','Title')->rule('required');
     $form->text('subtitle','Subtitle');
     $form->submit('save');
     echo blade('dataform.tests.form', compact('form'));

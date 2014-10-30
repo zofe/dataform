@@ -39,6 +39,21 @@ class Field
     public function getValue() {
         return $this->value;
     }
+
+    /**
+     * add rules for field es.:  required|min:5 ...
+     * @param $rule
+     * @return $this
+     */
+    public function rule($rule)
+    {
+        $this->rule = trim($this->rule."|".$rule, "|");
+        if ((strpos($this->rule, "required") !== false) and !isset($this->no_star)) {
+            $this->required = true;
+        }
+
+        return $this;
+    }
     
     /**
      * display field on "edit" status

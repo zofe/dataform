@@ -13,7 +13,10 @@ class DataForm
     public $multipart = false;
     public $output = '';
     public $validator;
-    public $status = 'edit';
+
+    public $process_status = "idle";
+    public $status = "edit";
+    public $action = "idle";
 
     public $open;
     public $close;
@@ -78,6 +81,24 @@ class DataForm
                 return true;
             }*/
 
+            //callable
+            if ($this->form_callable && $this->process_status == "success") {
+                $callable = $this->form_callable;
+                $result = $callable($this);
+                if ($result && is_a($result, 'Illuminate\Http\RedirectResponse')) {
+                    $this->redirect = $result;
+                }
+                //reprocess if an error is added in closure
+                if ($this->process_status == 'error') {
+                    $this->process();
+                }
+            }
+
+            //cleanup submits if success
+            if ($this->process_status == 'success') {
+                $this->removeFieldType('submit');
+            }
+
         }
 
         $this->process_status = "error";
@@ -118,6 +139,45 @@ class DataForm
         }
     }
 
+    /**
+     * remove field from fields list
+     *
+     * @param $fieldname
+     * @return $this
+     */
+    public function removeField($fieldname)
+    {
+        if (isset($this->fields[$fieldname]))
+            unset($this->fields[$fieldname]);
+
+        return $this;
+    }
+
+    /**
+     * remove field where type==$type from field list and button container
+     *
+     * @param $type
+     * @return $this
+     */
+    public function removeFieldType($type)
+    {
+        foreach ($this->fields as $fieldname => $field) {
+            if ($field->type == $type) {
+                unset($this->fields[$fieldname]);
+            }
+        }
+        foreach ($this->button_container as $container => $buttons) {
+            foreach ($buttons as $key=>$button) {
+                if (strpos($button, 'type="'.$type.'"')!==false) {
+                    $this->button_container[$container][$key] = "";
+                }
+            }
+        }
+
+        return $this;
+    }
+    
+    
     /**
      * add field to the form using name, label and type
      * 
