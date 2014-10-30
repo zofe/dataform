@@ -10,6 +10,8 @@ class DataForm
 {
     public $model;
     public $fields = array();
+    public $values = array();
+    
     public $multipart = false;
     public $output = '';
     public $validator;
@@ -45,7 +47,7 @@ class DataForm
         $ins->process_url = link_route('save');
         if (is_object($source) && is_a($source, '\Illuminate\Database\Eloquent\Model')) {
             $ins->model = $source;
-            $ins->status = ($ins->model->exists) ? "modify" : "create";
+            //$ins->status = ($ins->model->exists) ? "modify" : "create";
         }
         BurpEvent::listen('dataform.save', array($ins, 'save'));
         return $ins;
@@ -70,71 +72,61 @@ class DataForm
     public function save()
     {
         $this->setFieldValues();
-        if ($this->isValid()) {
-            
+        $valid = $this->isValid();
+        
+        if ($valid) {
             $this->getFieldValues();
-            //set field values
-
-
-            /*if (isset($this->model)) {
-                return $this->model->save();
-            } else {
-                return true;
-            }*/
+            $valid = $this->saveModel();
+        }
+        
+        if ($valid) {
+            
             $this->process_status = "success";
             
             //callable
             if ($this->form_callable) {
-                
+   
                 $callable = $this->form_callable;
                 $result = $callable($this);
                 
-                //verificare se nella closure c'è un header location 
-                //o un redirect di laravel
+                //todo: verificare se nella closure c'è un header location un redirect di laravel (e in caso, gestirlo)
                 if ($result) {
-                    //$this->redirect = $result;
                     return $result;
                 }
 
-                /*
-                if ($result && is_a($result, 'Illuminate\Http\RedirectResponse')) {
-                    $this->redirect = $result;
-                }
-                //reprocess if an error is added in closure
-                if ($this->process_status == 'error') {
-                    $this->process();
-                }*/
             }
-
             //cleanup submits if success
             if ($this->process_status == 'success') {
                 $this->removeFieldType('submit');
+                
             }
-
         }
-
+        
+        //altrimenti non è valido o è fallito il salvataggio
         $this->process_status = "error";
-        return false;
     }
-
+    
     /**
      * set field values
      *
      * @return bool
      */
-    protected function setFieldValues()
+    protected function setFieldValues($from_model = false)
     {
-
-        //prenderli dal model, o dai valori di default se non c'è il post.. 
         foreach ($this->fields as $field)
         {
-            
+            if ($from_model) {
+                
+                if ($this->model->offsetExists($field->name)) {
+
+                    $field->setValue($this->model->{$field->name});
+                }
+            }
+            //todo: non usare direttamente $_POST  ma  un helper che puo' mascherare anche "Input" di laravel            
             if ($field->request_refill == true && isset($_POST[$field->name]) ) {
                 $field->setValue($_POST[$field->name]);
                 $field->is_refill = true;
             }
-
-
         }
     }
 
@@ -143,14 +135,36 @@ class DataForm
      *
      * @return bool
      */
-    protected function getFieldValues()
-    {
+    protected function getFieldValues() {
         foreach ($this->fields as $field)
         {
-            $this->values[] = $field->getValue($field->name);
+            $this->values[$field->name] = $field->getValue($field->name);
         }
     }
 
+    protected function saveModel() {
+        if (isset($this->model)) {
+
+            foreach ($this->values as $name => $value)
+            {
+                if ($this->model->offsetExists($name)) {
+                    
+                    $this->model->setAttribute($name, $value);
+                }
+
+            }
+            if ($this->model->offsetExists('created_at') || $this->model->offsetExists('created_at')) {
+                $this->model->touch();
+            }
+            return $this->model->save();
+            
+        } else {
+            return true;
+        }
+    }
+    
+    
+    
     /**
      * remove field from fields list
      *
@@ -340,6 +354,7 @@ class DataForm
     
     public function build($view)
     {
+        $this->setFieldValues(true);
         BurpEvent::flush('dataform.save');
 
         $view = ($view) ? $view : 'dataform.dataform';
