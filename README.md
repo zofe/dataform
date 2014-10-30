@@ -33,7 +33,7 @@ as form helper:
     });
     ...
 ```
-form with model binding 
+form with model binding (preset values and store new values on save):
 
 ```php
     $form = DataForm::source(User::find(1));
@@ -42,7 +42,7 @@ form with model binding
     
     $form->saved(function() use ($form)
     {
-        // user where id = 1 will be saved, 
+        // user where id = 1 saved, 
         // you can access it with $form->model inside this closure
         
         $form->message("ok record saved");
@@ -51,7 +51,7 @@ form with model binding
     ...
 
 ```
-for field "rules" you can reference to laravel validator included by deficient
+for field "rules" you can reference to laravel validation
 
 note that @ this time: 
 
@@ -61,9 +61,8 @@ note that @ this time:
 
 ## why not starting from laravel?
 
-Because it can be used stand alone, and in any other framework.  
-It has really minimal dependencies.
-
+We choose "deficient" (a subset of laravel components) 
+to be more isoladed, and give the ability to use it stand-alone or embedded in any other project.  
 
 ## Installation
 
