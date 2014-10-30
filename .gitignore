@@ -1,0 +1,15 @@
+.DS_Store
+.idea
+composer.lock
+/vendor
+/cache
+/config
+/database
+/lang
+/models
+/views/*
+!/views/dataform*
+
+
+
+
