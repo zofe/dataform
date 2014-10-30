@@ -16,20 +16,13 @@ It can
 
 ## usage
 
-IN DEVELOPMENT: 
+as form helper:
  
-  - there is only "text" field
-  - Model binding is under development
-  
-
-for field "rules" you can reference to laravel validator. 
-
 
 ```php
-
     $form = DataForm::create();
     $form->text('title','Title'); //field name, label
-    $form->text('body','Body')->rule('required'); //validation
+    $form->text('body','Body')->rule('required'); //validator 
     
     $form->saved(function() use ($form)
     {
@@ -39,9 +32,32 @@ for field "rules" you can reference to laravel validator.
         $form->linkRoute("home","Back to the Form");
     });
     ...
+```
+form with model binding 
+
+```php
+    $form = DataForm::source(User::find(1));
+    $form->text('title','Title'); //field name, label
+    $form->text('body','Body')->rule('required'); //validation
+    
+    $form->saved(function() use ($form)
+    {
+        // user where id = 1 will be saved, 
+        // you can access it with $form->model inside this closure
+        
+        $form->message("ok record saved");
+        $form->linkRoute("home","Back to the Form");
+    });
+    ...
 
 ```
+for field "rules" you can reference to laravel validator included by deficient
 
+note that @ this time: 
+
+  - there is only "text" field
+  - model-binding still not support relations
+ 
 
 ## why not starting from laravel?
 
