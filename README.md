@@ -38,7 +38,9 @@ form with model binding (preset values and store new values on save):
 ```php
     $form = DataForm::source(User::find(1));
     $form->text('title','Title'); //field name, label
-    $form->text('body','Body')->rule('required'); //validation
+    $form->textarea('body','Body')->rule('required'); //validation
+    $form->checkbox('public','Public');
+    $form->submit('Save');
     
     $form->saved(function() use ($form)
     {
