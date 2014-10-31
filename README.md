@@ -26,7 +26,7 @@ as form helper:
     $form->submit('Save');
     $form->saved(function() use ($form)
     {
-        //do something with post, then..
+        //do something with post values, then..
         
         $form->message("ok record saved");
         $form->linkRoute("home","Back to the Form");
@@ -43,9 +43,6 @@ form with model binding (preset values and store new values on save):
     $form->submit('Save');
     $form->saved(function() use ($form)
     {
-        // user where id = 1 saved, 
-        // you can access it with $form->model inside this closure
-        
         $form->message("ok record saved");
         $form->linkRoute("home","Back to the Form");
     });
@@ -56,7 +53,7 @@ for field "rules" you can reference to laravel validation
 
 note that @ this time: 
 
-  - there is only "text" field
+  - there are only text,textarea and checkbox fields
   - model-binding still not support relations
  
 
