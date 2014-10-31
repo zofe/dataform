@@ -23,7 +23,7 @@ as form helper:
     $form = DataForm::create();
     $form->text('title','Title'); //field name, label
     $form->text('body','Body')->rule('required'); //validator 
-    
+    $form->submit('Save');
     $form->saved(function() use ($form)
     {
         //do something with post, then..
@@ -41,7 +41,6 @@ form with model binding (preset values and store new values on save):
     $form->textarea('body','Body')->rule('required'); //validation
     $form->checkbox('public','Public');
     $form->submit('Save');
-    
     $form->saved(function() use ($form)
     {
         // user where id = 1 saved, 
