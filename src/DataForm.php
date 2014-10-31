@@ -9,7 +9,9 @@ use Zofe\DataForm\Fields\Field;
 class DataForm
 {
     public $model;
-    public $fields = array();
+    
+    
+    public $fields;
     public $values = array();
     
     public $multipart = false;
@@ -45,6 +47,7 @@ class DataForm
     {
         $ins = new static();
         $ins->process_url = link_route('save');
+        $ins->fields = new FieldCollection();
         if (is_object($source) && is_a($source, '\Illuminate\Database\Eloquent\Model')) {
             $ins->model = $source;
             //$ins->status = ($ins->model->exists) ? "modify" : "create";
@@ -187,11 +190,7 @@ class DataForm
      */
     public function removeFieldType($type)
     {
-        foreach ($this->fields as $fieldname => $field) {
-            if ($field->type == $type) {
-                unset($this->fields[$fieldname]);
-            }
-        }
+        $this->fields->removeType($type);
         foreach ($this->button_container as $container => $buttons) {
             foreach ($buttons as $key=>$button) {
                 if (strpos($button, 'type="'.$type.'"')!==false) {
@@ -214,39 +213,10 @@ class DataForm
      */
     public function add($name, $label, $type)
     {
-        $classname = '\Zofe\DataForm\Fields\\' . ucfirst($type);
-        $legacy = '\Zofe\DataForm\Fields\\' . 'add' . ucfirst($type);
-
-        if (class_exists($classname) || class_exists($legacy)) {
-            $class = (class_exists($legacy)) ? $legacy : $classname;
-
-            $field = new $class;
-            $field->name = $name;
-            $field->label = $label;
-            return $this->append($field);
-        }
+        return $this->fields->add($name, $label, $type);
     }
 
-
-    /**
-     * append field to the form using field instance
-     *
-     * @param string $name
-     * @return mixed
-     */
-    protected function append(Field $field)
-    {
-        $this->fields[$field->name] = $field;
-
-        if (in_array($field->type, array('file','image'))) {
-            $this->multipart = true;
-        }
-        
-        $this->fields[$field->name] = $field;
-
-        return $field;
-    }
-
+    
     /**
      * add a submit button
      *
