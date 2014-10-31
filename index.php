@@ -19,6 +19,7 @@ route_any('^/{save?}$', array('as'=>'home', function () {
     
     $form = DataForm::create(User::find(1));
     $form->text('name','Name')->rule('required');
+    $form->textarea('lastname','Name');
     $form->submit('Save');
 
     $form->saved(function() use ($form)

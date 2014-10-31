@@ -11,15 +11,5 @@ class Text extends Field
     public function edit() {
         return Form::text($this->name, $this->value, $this->attributes);
     }
-    
-    public function build() {
-        if (parent::build() === false) return;
-        
-        $this->output = $this->make($this->status);
-    }
-    
-    protected function make($status)
-    {
-        return $this->$status();
-    }
+
 }

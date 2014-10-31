@@ -17,7 +17,7 @@ class Field
     public $rule = '';
     public $req = '';
     public $messages = array();
-    public $attributes = array();
+    public $attributes = array('class'=>'form-control');
     public $output = '';
     public $has_error = '';
     public $request_refill = true;
@@ -81,9 +81,7 @@ class Field
     public function show() {
         return $this->value;
     }
-    
 
-    
     public function build() {
         
         if (($this->status == "hidden" || $this->visible === false || in_array($this->type, array("hidden", "auto")))) {
@@ -99,5 +97,12 @@ class Field
         if ($this->visible === false) {
             return false;
         }
+        
+        $this->output = $this->make($this->status);
+    }
+
+    protected function make($status)
+    {
+        return $this->$status();
     }
 }
