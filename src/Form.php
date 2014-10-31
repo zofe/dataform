@@ -84,7 +84,7 @@ class Form {
             unset($attr['checked']);
         }
 
-        return self::input($data, $value, $attr, 'checkbox');
+        return self::input($name, $value, $attr, 'checkbox');
     }
     
     public static function radio($name, $value = '', $checked = FALSE, $attr = array())

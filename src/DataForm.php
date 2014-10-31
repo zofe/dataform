@@ -118,17 +118,14 @@ class DataForm
     {
         foreach ($this->fields as $field)
         {
-            if ($from_model) {
-                
+            if ($field->request_refill == true && is_route('save') ) {
+                $field->setValue(request_input($field->name));
+                $field->is_refill = true;
+            } elseif ($from_model) {
                 if ($this->model->offsetExists($field->name)) {
 
                     $field->setValue($this->model->{$field->name});
                 }
-            }
-            //todo: non usare direttamente $_POST  ma  un helper che puo' mascherare anche "Input" di laravel            
-            if ($field->request_refill == true && isset($_POST[$field->name]) ) {
-                $field->setValue($_POST[$field->name]);
-                $field->is_refill = true;
             }
         }
     }
