@@ -66,9 +66,10 @@ class Form {
         $attr['name'] = $name;
         $input = '<select '.self::attributes($attr).'>'."\n";
         foreach ($options as $key => $val) {
-            $sel = ($selected == $key) ? ' selected="selected"' : '';
-            $dis = ($disabled === $key and $key!='') ? ' disabled="disabled"' : '';
-            $input .= '<option value="'.$key.'"'.$sel.$dis.'>'.$val.'</option>'."\n";
+            $opt_attr = array();
+            if ($value === $key) $opt_attr['selected'] = 'selected';
+            //if ($disabled === $key and $key!='') $opt_attr['disabled'] = 'disabled';
+            $input .= '<option value="'.$key.'"'.self::attributes($opt_attr).'>'.$val.'</option>'."\n";
         }
         $input .= '</select>';
 

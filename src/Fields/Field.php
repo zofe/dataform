@@ -14,6 +14,7 @@ class Field
     public $name;
     public $label;
     public $value = null;
+    public $options = array();
     public $rule = '';
     public $req = '';
     public $messages = array();
@@ -31,6 +32,35 @@ class Field
         $this->value = $value;
     }
 
+    /**
+     * set options array (for select, checkboxgroup, etc..)
+     * 
+     * @param $options
+     * @return $this
+     */
+    public function options($options)
+    {
+        if (is_array($options)) {
+            $this->options += $options;
+        }
+
+        return $this;
+    }
+
+    /**
+     * append single option: value and description (for select, checkboxgroup, etc..)
+     * 
+     * @param string $value
+     * @param string $description
+     * @return $this
+     */
+    public function option($value = '', $description = '')
+    {
+        $this->options[$value] = $description;
+
+        return $this;
+    }
+    
     /**
      * get value
      * 
