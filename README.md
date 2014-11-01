@@ -40,6 +40,7 @@ form with model binding (preset values and store new values on save):
     $form->text('title','Title'); //field name, label
     $form->textarea('body','Body')->rule('required'); //validation
     $form->checkbox('public','Public');
+    $form->select('role', 'Role')->options(Role::lists("name", "id"));
     $form->submit('Save');
     $form->saved(function() use ($form)
     {
@@ -53,7 +54,7 @@ for field "rules" you can reference to laravel validation
 
 note that @ this time: 
 
-  - there are only text,textarea and checkbox fields
+  - there are only text,textarea,select and checkbox fields
   - model-binding still not support relations
  
 
