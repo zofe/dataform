@@ -21,5 +21,6 @@
             "Zofe\\DataForm\\": "src/"
         },
         "files": ["src/helpers.php"]
-    }
+    },
+    "minimum-stability": "dev"
 }
