@@ -84,6 +84,6 @@ This is a small how-to
 
 ```
   $ php vendor/zofe/deficient/deficient setup:folders
-  $ php vendor/zofe/datagrid/dataform setup:views
-  $ php vendor/zofe/datagrid/dataform setup:router
+  $ php vendor/zofe/dataform/dataform setup:views
+  $ php vendor/zofe/dataform/dataform setup:router
 ```
