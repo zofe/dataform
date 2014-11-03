@@ -121,7 +121,7 @@ class DataForm
             if ($field->request_refill == true && is_route('save') ) {
                 $field->setValue(request_input($field->name));
                 $field->is_refill = true;
-            } elseif ($from_model) {
+            } elseif ($from_model && isset($this->model)) {
                 if ($this->model->offsetExists($field->name)) {
 
                     $field->setValue($this->model->{$field->name});
