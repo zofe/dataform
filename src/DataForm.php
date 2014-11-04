@@ -27,6 +27,7 @@ class DataForm
     public $label;
     public $button_container = array( "TR"=>array(), "BL"=>array(), "BR"=>array() );
     public $message = "";
+    public $message_class = "alert alert-success"; 
     public $rules = "";
     public $error = "";
     protected $method = 'POST';
@@ -389,12 +390,14 @@ class DataForm
      *
      * @return $this
      */
-    public function error($error)
+    public function error($error, $show_form = false)
     {
         $this->process_status = 'error';
-        $this->message = '';
+        $this->message = ($show_form) ? '' : $error;
+        if (!$show_form) $this->removeFieldType('submit');
+        $this->message_class = 'alert alert-danger';
         $this->error .= $error;
-
+        $this->errors[] = $error;
         return $this;
     }
 
