@@ -210,7 +210,7 @@ class DataForm
      */
     public function render($field_name, array $attributes = array())
     {
-        return $this->fields->reder($field_name, $attributes)->all();
+        return $this->fields->get($field_name, $attributes)->all();
     }
 
     /**
