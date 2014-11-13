@@ -215,7 +215,8 @@ class DataForm
      */
     public function render($field_name, array $attributes = array())
     {
-        return $this->fields->get($field_name, $attributes)->all();
+        $field = $this->fields->get($field_name, $attributes);
+        return (is_object($field)) ? $field->all() : null;
     }
 
     /**
