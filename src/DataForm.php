@@ -119,10 +119,15 @@ class DataForm
     {
         foreach ($this->fields as $field)
         {
+            if ($field->default_value) {
+                $field->setValue($field->default_value);
+            }
             if ($field->request_refill == true && is_route('save') ) {
-                $field->setValue(request_input($field->name));
+                $field->setValue(request_input($field->name, $field->default_value));
                 $field->is_refill = true;
+                
             } elseif ($from_model && isset($this->model)) {
+                
                 if ($this->model->offsetExists($field->name)) {
 
                     $field->setValue($this->model->{$field->name});

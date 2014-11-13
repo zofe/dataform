@@ -14,6 +14,7 @@ class Field
     public $name;
     public $label;
     public $value = null;
+    public $default_value;
     public $options = array();
     public $rule = '';
     public $req = '';
@@ -99,6 +100,19 @@ class Field
 
         return $this;
     }
+
+    /**
+     * set default value
+     * 
+     * @param $value
+     * @return $this
+     */
+    public function value($value)
+    {
+        $this->default_value = $value;
+        return $this;
+    }
+    
     
     /**
      * display field on "edit" status
