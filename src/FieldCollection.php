@@ -50,5 +50,25 @@ class FieldCollection extends Collection
         $this->items[$item->name] = $item;
         return $item;
     }
-    
+
+    /**
+     * Get item from the collection
+     * 
+     * @param mixed $key
+     * @param mixed|null $attributes
+     * @return mixed
+     */
+    public function get($key, $attributes = array())
+    {
+        if (array_key_exists($key, $this->items))
+        {
+            $field = $this->items[$key];
+            if (count($attributes)) {
+                $field->attributes($attributes);
+                $field->build();
+            }
+            return $field;
+        }
+        
+    }
 }

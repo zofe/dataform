@@ -84,6 +84,21 @@ class Field
 
         return $this;
     }
+
+    /**
+     * set attributes for widget
+     * @param $attributes
+     * @return $this
+     */
+    public function attributes($attributes)
+    {
+        if (is_array($this->attributes) and is_array($attributes)) {
+            $attributes = array_merge($this->attributes, $attributes);
+        }
+        $this->attributes = $attributes;
+
+        return $this;
+    }
     
     /**
      * display field on "edit" status
@@ -131,6 +146,18 @@ class Field
         $this->output = $this->make($this->status);
     }
 
+    public function all()
+    {
+        $output  = "<label for=\"{$this->name}\" class=\"{$this->req}\">{$this->label}</label>";
+        $output .= $this->output;
+        $output  = '<span id="div_'.$this->name.'">'.$output.'</span>';
+        if ($this->has_error) {
+            $output = "<span class=\"has-error\">{$output}<span class=\"help-block\"><span class=\"glyphicon glyphicon-warning-sign\"></span> {$this->message}</span></span>";
+        }
+
+        return $output;
+    }
+    
     protected function make($status)
     {
         return $this->$status();

@@ -199,7 +199,31 @@ class DataForm
 
         return $this;
     }
-    
+
+
+    /**
+     * get entire field output (label, output, and messages)
+     * 
+     * @param $field_name
+     * @param  array  $attributes
+     * @return string
+     */
+    public function render($field_name, array $attributes = array())
+    {
+        return $this->fields->reder($field_name, $attributes)->all();
+    }
+
+    /**
+     * get field instance from fields array
+     * 
+     * @param $field_name
+     * @param  array    $attributes
+     * @return \Zofe\DataForm\Field $field
+     */
+    public function field($field_name, array $attributes = array())
+    {
+        return $this->fields->get($field_name, $attributes);
+    }
     
     /**
      * add field to the form using name, label and type
@@ -320,7 +344,7 @@ class DataForm
         }
     }
     
-    public function build($view)
+    public function build($view = null)
     {
         $this->setFieldValues(true);
         BurpEvent::flush('dataform.save');
